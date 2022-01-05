@@ -1,12 +1,12 @@
 <?php
 
-try{
-    ini_set('display_errors',1);
+try {
+    ini_set('display_errors', 1);
     error_reporting(E_ALL);
     //データベース名,ユーザー名、パスワード
-    $dsn ='mysql:dbname=contact_form;host=mysql;charset=utf8';
-    $user='root';
-    $password ='password';
+    $dsn = 'mysql:dbname=contact_form;host=mysql;charset=utf8';
+    $user = 'root';
+    $password = 'password';
 
     //MySQLのデータベースに接続
     $pdo = new PDO($dsn, $user, $password);
@@ -14,26 +14,23 @@ try{
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     //あらかじめMySOL内にテーブルとカラムを作成しておく必要がある
-    $name= $_POST['title'];
-    $email= $_POST['email'];
+    $name = $_POST['title'];
+    $email = $_POST['email'];
     $content = $_POST['content'];
 
     // INSERT文を変数に格納
     // あらかじめMySQL内に
-    $sql ="INSERT INTO contacts (title, email, content) VALUES (:title, :email, :content)";
+    $sql =
+        'INSERT INTO contacts (title, email, content) VALUES (:title, :email, :content)';
     $stmt = $pdo->prepare($sql);
     //$db = new PDO('mysql:dbname=contact_form;host=mysql;charset=utf8','root','password');
-    $params = array(':title' => $name, ':email' => $email, ':content' => $content);
+    $params = [':title' => $name, ':email' => $email, ':content' => $content];
     $stmt->execute($params);
 
-
-//     $db->exec(INSERT INTO contacts (title, email, content)VALUES("'.$title.'","'.$email.'","'.$content.'"));
-}catch(PDOException $e){
+    //     $db->exec(INSERT INTO contacts (title, email, content)VALUES("'.$title.'","'.$email.'","'.$content.'"));
+} catch (PDOException $e) {
     echo 'DB接続エラー:' . $e->getMessage();
-}
-
-
-?>
+} ?>
 
 
 

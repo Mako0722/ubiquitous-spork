@@ -9,23 +9,23 @@
 <body>
 <h1>送信履歴</h1>
 <?php
-    $dsn ='mysql:dbname=contact_form;host=mysql;charset=utf8';
-    $user='root';
-    $password ='password';
+$dsn = 'mysql:dbname=contact_form;host=mysql;charset=utf8';
+$user = 'root';
+$password = 'password';
 
-    //MySQLのデータベースに接続
-    $pdo = new PDO($dsn, $user, $password);
+//MySQLのデータベースに接続
+$pdo = new PDO($dsn, $user, $password);
 
-    // $user_id = 3;
-    // $sql ="SELECT * FROM contacts WHERE id IN(".$user_id.")";
-    // $result_rows = $pdo->query($sql);
+// $user_id = 3;
+// $sql ="SELECT * FROM contacts WHERE id IN(".$user_id.")";
+// $result_rows = $pdo->query($sql);
 
-    $result_list = $pdo->query('SELECT * FROM contacts ORDER BY title');
+$result_list = $pdo->query('SELECT * FROM contacts ORDER BY title');
 ?>
 
-<?php foreach ( $result_list as $row): ?>
-    <h2><?="{$row['title']}" ?></h2>
-    <?= "{$row['content']}"?>
+<?php foreach ($result_list as $row): ?>
+    <h2><?= "{$row['title']}" ?></h2>
+    <?= "{$row['content']}" ?>
 <?php endforeach; ?>
 
 <p><a href="index.php">戻る</a></p>
