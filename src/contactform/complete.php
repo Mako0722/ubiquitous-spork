@@ -1,6 +1,72 @@
 <?php
+    $errors = [];
+    if($_SERVER["REQUEST_METHOD"] != "POST") $errors[] ="post送信になっていません!";
 
-try {
+    $title = filter_input(INPUT_POST,'title');
+    $email = filter_input(INPUT_POST,'email');
+    $content = filter_input(INPUT_POST,'content');
+    if (empty($title) || empty($email) || empty($content)) $errors[] ="「タイトル」「Email」「お問い合わせ」のどれかが記入されていません!";
+
+    $db['user_name'] = "root";
+    $db['password'] = "password";
+    $pdo = new PDO("mysql:host=mysql; dbname=contact_form; charset=utf8", $db['user_name'], $db['password']);
+
+    $sql = "INSERT INTO `contacts`(`id`, `title`, `email`, `content`) VALUES (0,:title,:email,:content)";
+    $statement = $pdo->prepare($sql);
+    $statement->bindValue(':title', $title, PDO::PARAM_STR);
+    $statement->bindValue(':email', $email, PDO::PARAM_STR);
+    $statement->bindValue(':content', $content, PDO::PARAM_STR);
+    $statement->execute();
+
+    if(empty($errors)) {
+        $message = '送信完了！！！';
+        $links = '
+            <a href="./index.php">
+                <p>送信画面へ</p>
+            </a>
+            <a href="./history.php">
+                <p>送信履歴をみる</p>
+            </a>';
+    } else{
+        $links = '
+        <a href="./index.php">
+            <p>送信画面へ</p>
+        </a>
+        ';
+    }
+?>
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>送信完了画面</title>
+</head>
+
+<body>
+    <div class="container">
+        <?php if (!empty($errors)) : ?>
+            <?php foreach ($errors as $error) : ?>
+                <p><?php echo $error . "\n"; ?></p>
+            <?php endforeach; ?>
+            <?php echo $links; ?>
+        <?php endif; ?>
+
+        <?php if (empty($errors)) : ?>
+            <?php
+            echo '<h2>' . $message . '</h2>';
+            echo $links;
+            ?>
+        <?php endif; ?>
+    </div>
+</body>
+
+</html>
+
+<!-- try {
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
     //データベース名,ユーザー名、パスワード
@@ -30,11 +96,11 @@ try {
     //     $db->exec(INSERT INTO contacts (title, email, content)VALUES("'.$title.'","'.$email.'","'.$content.'"));
 } catch (PDOException $e) {
     echo 'DB接続エラー:' . $e->getMessage();
-} ?>
+} ?> -->
 
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -47,4 +113,4 @@ try {
     <p><a href="index.php">送信画面へ</a></p>
     <p><a href="history.php">送信履歴をみる</a></p>
 </body>
-</html>
+</html> -->
