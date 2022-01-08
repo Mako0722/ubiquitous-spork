@@ -1,39 +1,49 @@
 <?php
-    $errors = [];
-    if($_SERVER["REQUEST_METHOD"] != "POST") $errors[] ="post送信になっていません!";
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+    $errors[] = 'post送信になっていません!';
+}
 
-    $title = filter_input(INPUT_POST,'title');
-    $email = filter_input(INPUT_POST,'email');
-    $content = filter_input(INPUT_POST,'content');
-    if (empty($title) || empty($email) || empty($content)) $errors[] ="「タイトル」「Email」「お問い合わせ」のどれかが記入されていません!";
+$title = filter_input(INPUT_POST, 'title');
+$email = filter_input(INPUT_POST, 'email');
+$content = filter_input(INPUT_POST, 'content');
+if (empty($title) || empty($email) || empty($content)) {
+    $errors[] =
+        '「タイトル」「Email」「お問い合わせ」のどれかが記入されていません!';
+}
 
-    $db['user_name'] = "root";
-    $db['password'] = "password";
-    $pdo = new PDO("mysql:host=mysql; dbname=contact_form; charset=utf8", $db['user_name'], $db['password']);
+$db['user_name'] = 'root';
+$db['password'] = 'password';
+$pdo = new PDO(
+    'mysql:host=mysql; dbname=contact_form; charset=utf8',
+    $db['user_name'],
+    $db['password']
+);
 
-    $sql = "INSERT INTO `contacts`(`id`, `title`, `email`, `content`) VALUES (0,:title,:email,:content)";
-    $statement = $pdo->prepare($sql);
-    $statement->bindValue(':title', $title, PDO::PARAM_STR);
-    $statement->bindValue(':email', $email, PDO::PARAM_STR);
-    $statement->bindValue(':content', $content, PDO::PARAM_STR);
-    $statement->execute();
+$sql =
+    'INSERT INTO `contacts`(`id`, `title`, `email`, `content`) VALUES (0,:title,:email,:content)';
+$statement = $pdo->prepare($sql);
+$statement->bindValue(':title', $title, PDO::PARAM_STR);
+$statement->bindValue(':email', $email, PDO::PARAM_STR);
+$statement->bindValue(':content', $content, PDO::PARAM_STR);
+$statement->execute();
 
-    if(empty($errors)) {
-        $message = '送信完了！！！';
-        $links = '
+if (empty($errors)) {
+    $message = '送信完了！！！';
+    $links = '
             <a href="./index.php">
                 <p>送信画面へ</p>
             </a>
             <a href="./history.php">
                 <p>送信履歴をみる</p>
             </a>';
-    } else{
-        $links = '
+} else {
+    $links = '
         <a href="./index.php">
             <p>送信画面へ</p>
         </a>
         ';
-    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -48,14 +58,14 @@
 
 <body>
     <div class="container">
-        <?php if (!empty($errors)) : ?>
-            <?php foreach ($errors as $error) : ?>
+        <?php if (!empty($errors)): ?>
+            <?php foreach ($errors as $error): ?>
                 <p><?php echo $error . "\n"; ?></p>
             <?php endforeach; ?>
             <?php echo $links; ?>
         <?php endif; ?>
 
-        <?php if (empty($errors)) : ?>
+        <?php if (empty($errors)): ?>
             <?php
             echo '<h2>' . $message . '</h2>';
             echo $links;
