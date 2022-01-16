@@ -1,8 +1,12 @@
 <?php
 
-$db['user_name'] = "root";
-$db['password'] = "password";
-$pdo = new PDO("mysql:host=mysql; dbname=memo; charset=utf8", $db['user_name'], $db['password']);
+$db['user_name'] = 'root';
+$db['password'] = 'password';
+$pdo = new PDO(
+    'mysql:host=mysql; dbname=memo; charset=utf8',
+    $db['user_name'],
+    $db['password']
+);
 
 // $sql = "INSERT INTO `pages`(`id`, `title`, `content`) VALUES (0,:title,:content)";
 
@@ -15,34 +19,42 @@ $statement = $pdo->prepare($sql);
 $statement->execute();
 $pages_lists = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$sql = "SELECT * FROM pages";
+$sql = 'SELECT * FROM pages';
 if (!empty($_GET['searchWord'])) {
-    $escapedKeyword = "";
-    $searchWord = filter_input(INPUT_GET, 'searchWord', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $sql .= " where title like :keyword";
+    $escapedKeyword = '';
+    $searchWord = filter_input(
+        INPUT_GET,
+        'searchWord',
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    );
+    $sql .= ' where title like :keyword';
     $pattern = '/%/';
     if (preg_match($pattern, $searchWord)) {
         $escapedKeyword = str_replace('%', '\%', $search);
         $searchKeyword = '%' . $escapedKeyword . '%';
-    } else $searchKeyword = '%' . $searchWord . '%';
+    } else {
+        $searchKeyword = '%' . $searchWord . '%';
+    }
 }
 
 $statement = $pdo->prepare($sql);
-if (!empty($_GET['searchWord'])) $statement->bindValue(':keyword', $searchKeyword, PDO::PARAM_STR);
+if (!empty($_GET['searchWord'])) {
+    $statement->bindValue(':keyword', $searchKeyword, PDO::PARAM_STR);
+}
 $statement->execute();
 
 //昇順に並び替えるSQL文
-	$sql = "SELECT * FROM pages ORDER BY created_at";
+$sql = 'SELECT * FROM pages ORDER BY created_at';
 
 // 	//降順が指定されているか判定
-	if( isset($_POST["sort"]) && $_POST["sort"] == "desc"){
-    		//降順に並び替えるSQL文に変更
-    		$sql = $sql . " DESC";
-    	}
+if (isset($_POST['sort']) && $_POST['sort'] == 'desc') {
+    //降順に並び替えるSQL文に変更
+    $sql = $sql . ' DESC';
+}
 
-    	$statement = $pdo->prepare($sql);
-    	$statement->execute();
-    $pages_lists = $statement->fetchAll(PDO::FETCH_ASSOC);
+$statement = $pdo->prepare($sql);
+$statement->execute();
+$pages_lists = $statement->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -63,7 +75,8 @@ $statement->execute();
     <div>
         <form method="get" action="./index.php">
             <div>
-                <input type="textarea" name="searchWord" placeholder="Search..." value="<?php echo $search ?? '' ?>">
+                <input type="textarea" name="searchWord" placeholder="Search..." value="<?php echo $search ??
+                    ''; ?>">
                 <button type="submit">検索</button>
             </div>
         </form>
@@ -85,20 +98,23 @@ $statement->execute();
         </tr>
     </table>
 </div>
-<?php
-    foreach($pages_lists as $pages_list):?>
+<?php foreach ($pages_lists as $pages_list): ?>
     <div class="row justify-content-center">
       <table class="table">
         <tr>
-          <th><?php echo $pages_list['title'] ?></th>
-          <th><?php echo $pages_list['content'] ?></th>
-          <th><?php echo $pages_list['created_at'] ?></th>
-          <th><a href="edit.php?id=<?php echo $pages_list['id'] ?>">編集</a></th>
-          <th><a href="delete.php?id=<?php echo $pages_list['id'] ?>">削除</a></th>
+          <th><?php echo $pages_list['title']; ?></th>
+          <th><?php echo $pages_list['content']; ?></th>
+          <th><?php echo $pages_list['created_at']; ?></th>
+          <th><a href="edit.php?id=<?php echo $pages_list[
+              'id'
+          ]; ?>">編集</a></th>
+          <th><a href="delete.php?id=<?php echo $pages_list[
+              'id'
+          ]; ?>">削除</a></th>
         </tr>
       </table>
     </div>
-<?php endforeach ?>
+<?php endforeach; ?>
 
 
 <form action="" method="post">
@@ -107,23 +123,19 @@ $statement->execute();
 	昇順を指定するラジオボタン
 	-->
 	<input type="radio" name="sort" value="asc"
-<?php
-	//降順に指定されていない時はチェックする
-	if( !isset($_POST["sort"]) || $_POST["sort"] != "desc"){
-		echo "checked";
-	}
-?> >昇順
+<?php //降順に指定されていない時はチェックする
+if (!isset($_POST['sort']) || $_POST['sort'] != 'desc') {
+    echo 'checked';
+} ?> >昇順
 
 	<!--
 	降順を指定するラジオボタン
 	-->
 	<input type="radio" name="sort" value="desc"
-<?php
-	//降順に指定されている時はチェックする
-	if( isset($_POST["sort"]) && $_POST["sort"] == "desc"){
-		echo "checked";
-	}
-?> >降順
+<?php //降順に指定されている時はチェックする
+if (isset($_POST['sort']) && $_POST['sort'] == 'desc') {
+    echo 'checked';
+} ?> >降順
 
 <input type="submit" value="並び替え">
 </form>

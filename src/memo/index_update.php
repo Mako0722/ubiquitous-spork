@@ -1,14 +1,23 @@
 <?php
 
-$db['user_name'] = "root";
-$db['password'] = "password";
+$db['user_name'] = 'root';
+$db['password'] = 'password';
 
-$pdo = new PDO("mysql:host=mysql; dbname=memo; charset=utf8", $db['user_name'], $db['password']);
+$pdo = new PDO(
+    'mysql:host=mysql; dbname=memo; charset=utf8',
+    $db['user_name'],
+    $db['password']
+);
 
-$stmt = $pdo->prepare('UPDATE pages SET title = :title, content = :content WHERE id = :id');
+$stmt = $pdo->prepare(
+    'UPDATE pages SET title = :title, content = :content WHERE id = :id'
+);
 
-$stmt->execute(array(':title' => $_POST['title'], ':content' => $_POST['content'], ':id' => $_POST['id']));
-
+$stmt->execute([
+    ':title' => $_POST['title'],
+    ':content' => $_POST['content'],
+    ':id' => $_POST['id'],
+]);
 ?>
 <html>
   <head>
