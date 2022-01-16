@@ -1,0 +1,12 @@
+th,td{
+  border:solid 1px #aaaaaa;
+}
+
+
+th{
+  width: 20%;
+}
+
+td{
+  width: 20%;
+}
